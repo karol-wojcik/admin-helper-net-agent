@@ -15,6 +15,7 @@ public class ClassExecutingTask {
        Executors.newScheduledThreadPool(1);
 	
 	public void runPingTest() {
+		// get properties file
 		Properties prop = new Properties();
 		InputStream in = this.getClass().getResourceAsStream("config.properties");
 		try {
@@ -26,8 +27,7 @@ public class ClassExecutingTask {
 		
 		final Runnable pinger = new Runnable() {
 			public void run() {
-				
-				
+				// do ping test for all hosts from file
 				System.out.println();
 				System.out.println("====================== New test below: " + new Date() + " ======================");
 				Ping ping = new Ping();
@@ -35,18 +35,8 @@ public class ClassExecutingTask {
 			}
 		};
 		pingPeriod = Long.parseLong(prop.getProperty("PING_TEST_PERIOD_SECONDS").trim());
+		// start pinger every pingPeriod seconds until forever
 		final ScheduledFuture<?> pingerHandle = scheduler.scheduleAtFixedRate(pinger, 0,  pingPeriod, SECONDS);
 //		scheduler.schedule(new Runnable() {public void run () {pingerHandle.cancel(true);}}, 10, SECONDS);
 	}
-	
-    public void beepForAnHour() {
-        final Runnable beeper = new Runnable() {
-                public void run() { System.out.println("beep"); }
-            };
-        final ScheduledFuture<?> beeperHandle =
-            scheduler.scheduleAtFixedRate(beeper, 10, 10, SECONDS);
-        scheduler.schedule(new Runnable() {
-                public void run() { beeperHandle.cancel(true); }
-            }, 60 * 60, SECONDS);
-    }
 }

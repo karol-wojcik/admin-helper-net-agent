@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class ReportData {
 	private String table;
+	private String device;
 	private long time;
 	private Map<String, String> data;
 	
@@ -24,6 +25,12 @@ public class ReportData {
 	}
 	public void setData(Map<String, String> data) {
 		this.data = data;
+	}
+	public String getDevice() {
+		return device;
+	}
+	public void setDevice(String device) {
+		this.device = device;
 	}
 
 }

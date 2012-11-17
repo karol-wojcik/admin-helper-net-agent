@@ -23,6 +23,7 @@ public class Ping {
 	private Properties prop;
 	
 	public Ping(){
+		// default constructor
 		this.prop = new Properties();
 		InputStream in = this.getClass().getResourceAsStream("config.properties");
 		try {
@@ -32,12 +33,22 @@ public class Ping {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 
+	 * @return 
+	 * 
+	 * Method to start whole test procedure
+	 * Gets hosts from a file and starts testPingSendReport method 
+	 */
 	public boolean testPing(){
 		// get addresses
 		FileInputStream in = null;
 		try {
+			// get file with hosts
 			in = new FileInputStream("serverIPs.txt");
 		} catch (FileNotFoundException e2) {
+			// no file available - create new file with one, default host
 			FileOutputStream fop = null;
 			File file;
 			String content = this.prop.getProperty("DEFAULT_IP_TO_TEST"); 
@@ -82,6 +93,7 @@ public class Ping {
 		         
 		try {
 			while ((strLine = br.readLine()) != null) {
+				// read hosts file and load them into arrayList
 				hosts.add(strLine);
 			}
 		} catch (IOException e3) {
@@ -90,6 +102,7 @@ public class Ping {
 		}
 		
 		try {
+			//close hosts file
 			in.close();
 		} catch (IOException e2) {
 			// TODO Auto-generated catch block
@@ -97,13 +110,21 @@ public class Ping {
 		}
 
 		for (String address : hosts) {
+			// do test and send report for each host 
 			this.testPingSendReport(address);
 		}
 		
 		return true;
 	}
 
-	public boolean testPingSendReport(String address) {
+	/**
+	 * 
+	 * @param address ipAddress/host to ping
+	 * @return true/false 
+	 * 
+	 * Method to get ping result, fill the report form up and send (REST - POST) report to API endpoint
+	 */
+	private boolean testPingSendReport(String address) {
 		System.out.print("pinging: " + address);
 		String pingRes = "";
 		try {
@@ -126,6 +147,7 @@ public class Ping {
 		// fill up main object
 		rd.setTime(System.currentTimeMillis() / 1000L);
 		rd.setTable("ping");
+		rd.setDevice(address);
 		rd.setData(data);
 		
 		// add object to list of objects
@@ -140,36 +162,24 @@ public class Ping {
 			r.Send("/store",gson.toJson(rdl));
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 		
 		return true;
 	}
-	
-//	public static long pingUrl(final String address) {
-//		 try {
-//			final URL url = new URL("http://" + address);
-//			final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-//			urlConn.setConnectTimeout(1000 * 5); // mTimeout is in seconds
-//			final long startTime = System.currentTimeMillis();
-//			urlConn.connect();
-//			final long endTime = System.currentTimeMillis();
-//			
-//			if (urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//				System.out.print("Time (ms) : " + (endTime - startTime));
-//				System.out.println(" Ping to "+address +" was success");
-//				return endTime - startTime;
-//			}
-//		 } catch (final MalformedURLException e1) {
-////			 e1.printStackTrace();
-//			 System.out.println(" Ping to "+address +" with errors");
-//		 } catch (final IOException e) {
-////			 e.printStackTrace();
-//			 System.out.println(" Ping to "+address +" failed");
-//		 }
-//		 return -1;
-//		}
-//	
-	public String doPing(String address) throws IOException, IOException {	
+
+	/**
+	 * 
+	 * @param address ipAddress/host to ping 
+	 * @return avg ping time as a String
+	 * @throws IOException 
+	 * @throws IOException
+	 * 
+	 * Method to ping given address
+	 * It's making a GET request to a server. The server performs ping test and returns avgPingTime or -1 elsewhere  
+	 */
+	private String doPing(String address) throws IOException, IOException {
+		// b
 		String urlParameters = "url=" + address;
 		try {
 			String charset = "UTF-8";
@@ -211,7 +221,6 @@ public class Ping {
 			wr.close();
 			connection.disconnect();
 			
-//			System.out.println("Ping avg: " + response);
 			return response;
 		} catch (IOException ex) {
     		ex.printStackTrace();
