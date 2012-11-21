@@ -17,7 +17,7 @@ public class ClassExecutingTask {
 	public void runPingTest() {
 		// get properties file
 		Properties prop = new Properties();
-		InputStream in = this.getClass().getResourceAsStream("config.properties");
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("config/config.properties");
 		try {
 			prop.load(in);
 		} catch (IOException e) {

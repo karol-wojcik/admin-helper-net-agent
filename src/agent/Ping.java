@@ -25,7 +25,7 @@ public class Ping {
 	public Ping(){
 		// default constructor
 		this.prop = new Properties();
-		InputStream in = this.getClass().getResourceAsStream("config.properties");
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("config/config.properties");
 		try {
 			this.prop.load(in);
 		} catch (IOException e) {
@@ -184,7 +184,7 @@ public class Ping {
 		try {
 			String charset = "UTF-8";
 			Properties prop = new Properties();
-			InputStream in = this.getClass().getResourceAsStream("config.properties");
+			InputStream in = this.getClass().getClassLoader().getResourceAsStream("config/config.properties");
 			prop.load(in);
 			
 			URL url = new URL(prop.getProperty("PING_TOOL_URL"));

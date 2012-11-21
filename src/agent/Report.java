@@ -15,7 +15,7 @@ public class Report {
 		try {
 			String charset = "UTF-8";
 			Properties prop = new Properties();
-			InputStream in = this.getClass().getResourceAsStream("config.properties");
+			InputStream in = this.getClass().getClassLoader().getResourceAsStream("config/config.properties");
 			prop.load(in);
 			String apiPoint = prop.getProperty("SERVER_URL") + endpoint;
 			String sensorKey = prop.getProperty("SENSOR_KEY");
@@ -58,6 +58,7 @@ public class Report {
 			wr.close();
 			connection.disconnect();
 			System.out.println("Response from " + apiPoint + ": " + response);
+			System.out.println();
 		} catch (IOException ex) {
     		ex.printStackTrace();
         }
